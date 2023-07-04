@@ -1,11 +1,13 @@
-const { ethers, run, network } = require("hardhat")
+import { ethers, run, network } from "hardhat"
+import { any } from "hardhat/internal/core/params/argumentTypes"
 
 async function main() {
-    const SimpleStorageFactory = await ethers.getContractFactory(
-        "SimpleStorage"
-    )
+    let SimpleStorageFactory: any
+    let simpleStorage: any
+
+    SimpleStorageFactory = await ethers.getContractFactory("SimpleStorage")
     console.log("Deploying contract...")
-    const simpleStorage = await SimpleStorageFactory.deploy()
+    simpleStorage = await SimpleStorageFactory.deploy()
     const deploymentReceipt = await simpleStorage
         .deploymentTransaction()
         .wait(6)
@@ -27,14 +29,14 @@ async function main() {
     console.log(`Updated Value is: ${updatedValue}`)
 }
 
-async function verify(contractAddress, args) {
+async function verify(contractAddress: string, args: any[]) {
     console.log("Verifying contract...")
     try {
         await run("verify:verify", {
             address: contractAddress,
             constructorArguments: args,
         })
-    } catch (e) {
+    } catch (e: any) {
         if (e.message.toLowerCase().includes("already verified")) {
             console.log("Already Verified!")
         } else {
@@ -43,7 +45,7 @@ async function verify(contractAddress, args) {
     }
 }
 
-function sleep(ms) {
+function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
